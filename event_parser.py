@@ -19,11 +19,11 @@ def GetGameDicts(f):
         elif split[0] == 'start':
             current_game.setdefault('starters', {}).setdefault('visitors' if split[3] == 0 else 'home', []).append((split[1],split[4],split[5]))
         elif split[0] == 'play':
-            current_game.setdefault('plays', []).append(split[1:])
+            current_game.setdefault('plays', []).append(tuple(split[1:]))
         elif split[0] == 'sub' or split[0] == 'com':
-            current_game.setdefault('plays', []).append(split)
+            current_game.setdefault('plays', []).append(tuple(split))
         elif split[0] == 'data':
-            current_game.setdefault('data', []).append(split[1:])
+            current_game.setdefault('data', []).append(tuple(split[1:]))
         else:
             print 'unknown row type: %s' % split[0]
     if len(current_game):
