@@ -1,3 +1,4 @@
+import json
 import sys
 
 
@@ -17,9 +18,10 @@ def GetGameDicts(f):
         elif split[0] == 'info':
             current_game.setdefault('info', {})[split[1]] = split[2]
         elif split[0] == 'start':
-            current_game.setdefault('starters', {}).setdefault('visitors' if split[3] == 0 else 'home', []).append((split[1],split[4],split[5]))
+            current_game.setdefault('starters', {}).setdefault('visitors' if (split[3] == '0') else 'home', []).append((split[1],split[4],split[5]))
         elif split[0] == 'play':
-            current_game.setdefault('plays', []).append(tuple(split[1:]))
+            last_play = split
+            current_game.setdefault('plays', []).append(('play', {'inning':split[1] + ('t' if split[2] == '0' else 'b'), 'batter':split[3], 'balls':int(split[4][0]), 'strikes':int(split[4][1]), 'pitches':split[5], 'result':split[6]}))
         elif split[0] == 'sub' or split[0] == 'com':
             current_game.setdefault('plays', []).append(tuple(split))
         elif split[0] == 'data':
@@ -34,8 +36,7 @@ def GetGameDicts(f):
 def main(argv = None):
     if argv is None:
         argv = sys.argv
-    print argv
-    print GetGameDicts(open(argv[1], 'r'))[0]
+    print json.dumps(GetGameDicts(open(argv[1], 'r')))
 
 if __name__ == '__main__':
     sys.exit(main())
